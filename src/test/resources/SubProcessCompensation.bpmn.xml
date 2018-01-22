@@ -21,7 +21,7 @@
             <bpmn:scriptTask id="SubProcessTaskA" name="In SubProcess A" scriptFormat="application/javascript">
                 <bpmn:incoming>SequenceFlow_1qllrn0</bpmn:incoming>
                 <bpmn:outgoing>SequenceFlow_1bthzxj</bpmn:outgoing>
-                <bpmn:script><![CDATA[println("SubProcess A");]]></bpmn:script>
+                <bpmn:script><![CDATA[print("SubProcess A");]]></bpmn:script>
             </bpmn:scriptTask>
             <bpmn:sequenceFlow id="SequenceFlow_1qllrn0" sourceRef="StartEvent_0is7gaf" targetRef="SubProcessTaskA"/>
             <bpmn:sequenceFlow id="SequenceFlow_1bthzxj" sourceRef="SubProcessTaskA" targetRef="EndEvent_124196t"/>
@@ -46,7 +46,7 @@
         </bpmn:boundaryEvent>
         <bpmn:scriptTask id="Task_1cwo9ak" name="Compensate SubProcess" isForCompensation="true" scriptFormat="application/javascript">
             <bpmn:script><![CDATA[
-                println("Compensate SubProcess");
+                print("Compensate SubProcess");
             ]]></bpmn:script>
         </bpmn:scriptTask>
         <bpmn:association id="Association_1nw5yt8" associationDirection="One" sourceRef="BoundaryEvent_0mxftis"

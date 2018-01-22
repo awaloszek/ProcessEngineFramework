@@ -28,7 +28,7 @@
             <bpmn2:script><![CDATA[
 
                 var dataObject = getDataObject("ItemDataObject");
-                println("DataObject User: " + dataObject.getUser());
+                print("DataObject User: " + dataObject.getUser());
                 dataObject.setUser("Changed");
                 print("DataObject User: " + dataObject.getUser());
             ]]></bpmn2:script>

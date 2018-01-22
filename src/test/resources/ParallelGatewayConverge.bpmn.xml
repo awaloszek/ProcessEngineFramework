@@ -24,7 +24,7 @@
             <bpmn2:incoming>SequenceFlow_0xwxppy</bpmn2:incoming>
             <bpmn2:outgoing>SequenceFlow_1iqndh0</bpmn2:outgoing>
             <bpmn2:script><![CDATA[
-                println("Task 1");
+                print("Task 1");
             ]]></bpmn2:script>
         </bpmn2:scriptTask>
 
@@ -35,7 +35,7 @@
             <bpmn2:incoming>SequenceFlow_0bvucq6</bpmn2:incoming>
             <bpmn2:outgoing>SequenceFlow_0texuj6</bpmn2:outgoing>
             <bpmn2:script><![CDATA[
-                println("Task 2");
+                print("Task 2");
             ]]></bpmn2:script>
         </bpmn2:scriptTask>
 
@@ -77,7 +77,7 @@
                 var oldValue = dataInput.getIntValue();
                 var newValue = oldValue + 1;
                 dataInput.setIntValue(newValue);
-                println("value changed from " + oldValue + " to " + newValue);
+                print("value changed from " + oldValue + " to " + newValue);
                 setDataOutput("Increment1DataOutput", dataInput);
             ]]></bpmn2:script>
         </bpmn2:scriptTask>

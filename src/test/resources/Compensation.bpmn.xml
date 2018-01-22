@@ -13,7 +13,7 @@
             <bpmn2:incoming>SequenceFlow_06bbarq</bpmn2:incoming>
             <bpmn2:outgoing>SequenceFlow_0wy9nnq</bpmn2:outgoing>
             <bpmn2:script><![CDATA[
-                println("run operation");
+                print("run operation");
             ]]></bpmn2:script>
         </bpmn2:scriptTask>
         <bpmn2:startEvent id="StartEvent_1" name="Incoming Message">
@@ -29,7 +29,7 @@
                             targetRef="IntermediateThrowEvent_1lzsua0"/>
         <bpmn2:scriptTask id="Task_0otrb37" name="Undo Operation" isForCompensation="true"
                           scriptFormat="application/javascript">
-            <bpmn2:script><![CDATA[println("run undo operation");]]></bpmn2:script>
+            <bpmn2:script><![CDATA[print("run undo operation");]]></bpmn2:script>
         </bpmn2:scriptTask>
         <bpmn2:sequenceFlow id="SequenceFlow_102fknk" sourceRef="IntermediateThrowEvent_1lzsua0"
                             targetRef="EndEvent_1s7xfmt"/>

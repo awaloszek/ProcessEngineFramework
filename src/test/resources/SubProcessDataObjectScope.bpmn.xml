@@ -43,7 +43,7 @@
                 <bpmn:script><![CDATA[
                     setDataOutput("SubProcessTaskADataOutput", "SubProcessDataObjectValue");
                     setDataOutput("SubProcessTaskADataOutput2", "TopLevelDataObjectValue");
-                    println("SubProcess A");
+                    print("SubProcess A");
                 ]]></bpmn:script>
             </bpmn:scriptTask>
             <bpmn:scriptTask id="SubProcessTaskB" name="In SubProcess B" scriptFormat="application/javascript">
@@ -62,7 +62,7 @@
                 </bpmn:dataInputAssociation>
                 <bpmn:script><![CDATA[
                     var value = getDataInput("SubProcessTaskBDataInput");
-                    println("SubProcess B: " + value);
+                    print("SubProcess B: " + value);
                 ]]></bpmn:script>
             </bpmn:scriptTask>
             <bpmn:sequenceFlow id="SequenceFlow_1qllrn0" sourceRef="StartEvent_0is7gaf" targetRef="SubProcessTaskA"/>

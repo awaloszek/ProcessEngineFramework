@@ -35,12 +35,12 @@
             <bpmn:scriptTask id="SubProcessTaskA" name="In SubProcess A" scriptFormat="application/javascript">
                 <bpmn:incoming>SequenceFlow_05uuucy</bpmn:incoming>
                 <bpmn:outgoing>SequenceFlow_0j8y2m8</bpmn:outgoing>
-                <bpmn:script><![CDATA[println("SubProcess A");]]></bpmn:script>
+                <bpmn:script><![CDATA[print("SubProcess A");]]></bpmn:script>
             </bpmn:scriptTask>
             <bpmn:scriptTask id="SubProcessTaskB" name="In SubProcess B" scriptFormat="application/javascript">
                 <bpmn:incoming>SequenceFlow_065ds7o</bpmn:incoming>
                 <bpmn:outgoing>SequenceFlow_0m2v0xm</bpmn:outgoing>
-                <bpmn:script><![CDATA[println("SubProcess B");]]></bpmn:script>
+                <bpmn:script><![CDATA[print("SubProcess B");]]></bpmn:script>
             </bpmn:scriptTask>
         </bpmn:subProcess>
         <bpmn:endEvent id="EndEvent_0w0sgp5">
@@ -52,7 +52,7 @@
         <bpmn:scriptTask id="GlobalProcessTask" name="In Global Process" scriptFormat="application/javascript">
             <bpmn:incoming>SequenceFlow_03u5fu3</bpmn:incoming>
             <bpmn:outgoing>SequenceFlow_0kzbmmm</bpmn:outgoing>
-            <bpmn:script><![CDATA[println("Global Process Task");]]></bpmn:script>
+            <bpmn:script><![CDATA[print("Global Process Task");]]></bpmn:script>
         </bpmn:scriptTask>
     </bpmn:process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_1">

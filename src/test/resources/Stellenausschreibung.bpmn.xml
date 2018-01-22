@@ -81,12 +81,14 @@
         <bpmn2:sequenceFlow id="SequenceFlow_3" sourceRef="StellenbeschreibungPruefen" targetRef="ExclusiveGateway"/>
         <bpmn2:sequenceFlow id="SequenceFlow_4" name="Nein" sourceRef="ExclusiveGateway" targetRef="StellenbeschreibungKorrigieren">
             <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" language="application/javascript">
+                load("nashorn:mozilla_compat.js");
                 importClass(com.bpmnengine.util.State);
                 !getDataObject('StellenausschreibungDataObject').getState().equals(State.APPROVED);
             </bpmn2:conditionExpression>
         </bpmn2:sequenceFlow>
         <bpmn2:sequenceFlow id="SequenceFlow_6" name="Ja" sourceRef="ExclusiveGateway" targetRef="AusschreibungAnstossen">
             <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" language="application/javascript">
+                load("nashorn:mozilla_compat.js");
                 importClass(com.bpmnengine.util.State);
                 getDataObject('StellenausschreibungDataObject').getState().equals(State.APPROVED);
             </bpmn2:conditionExpression>
@@ -202,8 +204,9 @@
                 <bpmn2:targetRef>StellenausschreibungDataObject</bpmn2:targetRef>
             </bpmn2:dataOutputAssociation>
             <bpmn2:script><![CDATA[
+                load("nashorn:mozilla_compat.js");
                 importClass(com.bpmnengine.util.State);
-                println("Stellenausschreibung durchfuehren");
+                print("Stellenausschreibung durchfuehren");
                 var stellenausschreibung = getDataInput('AusschreibungDurchfuehrenDataInput');
                 stellenausschreibung.setState(State.DONE);
                 setDataOutput('AusschreibungDurchfuehrenDataOutput', stellenausschreibung);
@@ -232,12 +235,13 @@
                 <bpmn2:targetRef>ProcessDataOutput</bpmn2:targetRef>
             </bpmn2:dataOutputAssociation>
             <bpmn2:script><![CDATA[
+                load("nashorn:mozilla_compat.js");
                 importClass(com.bpmnengine.util.State);
                 var stellenausschreibung = getDataInput('ErfolgsmeldungSendenDataInput');
                 if (stellenausschreibung.getState().equals(State.DONE))
-                    println("Erfolgsmeldung wird gesendet");
+                    print("Erfolgsmeldung wird gesendet");
                 else
-                    println("Irgendetwas ist schief gelaufen");
+                    print("Irgendetwas ist schief gelaufen");
 
                 setDataOutput('ErfolgsmeldungSendenDataOutput', stellenausschreibung);
             ]]></bpmn2:script>
@@ -277,6 +281,7 @@
                 <bpmn2:targetRef>StellenausschreibungDataObjectReference</bpmn2:targetRef>
             </bpmn2:dataOutputAssociation>
             <bpmn2:script><![CDATA[
+                load("nashorn:mozilla_compat.js");
                 importClass(com.bpmnengine.util.Stellenausschreibung);
                 var value = new Stellenausschreibung(123);
                 setDataOutput('StellenbeschreibungAnlegenDataOutput', value)
