@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings version="2.1"
+               xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <jaxb:bindings schemaLocation="../resources/xsd/Semantic.xsd" node="/xs:schema">
+
+        <jaxb:schemaBindings>
+            <jaxb:package name="com.bpmnengine.gen.omg.spec.bpmn.model"/>
+        </jaxb:schemaBindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tFlowNode']">
+            <jaxb:class implClass="com.bpmnengine.model.FlowNode"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tStartEvent']">
+            <jaxb:class implClass="com.bpmnengine.model.StartEvent"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tCatchEvent']">
+            <jaxb:class implClass="com.bpmnengine.model.CatchEvent"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tUserTask']">
+            <jaxb:class implClass="com.bpmnengine.model.UserTask"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tActivity']">
+            <jaxb:class implClass="com.bpmnengine.model.Activity"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tScriptTask']">
+            <jaxb:class implClass="com.bpmnengine.model.ScriptTask"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tEndEvent']">
+            <jaxb:class implClass="com.bpmnengine.model.EndEvent"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tIntermediateCatchEvent']">
+            <jaxb:class implClass="com.bpmnengine.model.IntermediateCatchEvent"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tFormalExpression']">
+            <jaxb:class implClass="com.bpmnengine.model.FormalExpression"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tCorrelationPropertyRetrievalExpression']">
+            <jaxb:class implClass="com.bpmnengine.model.CorrelationPropertyRetrievalExpression"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tCollaboration']">
+            <jaxb:class implClass="com.bpmnengine.model.Collaboration"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tCollaboration']//xs:element[@ref='correlationKey']">
+            <jaxb:property>
+                <jaxb:baseType name="com.bpmnengine.model.CorrelationKey" />
+            </jaxb:property>
+            <!--<jaxb:class ref="com.bpmnengine.model.BCollaboration"/>-->
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tCorrelationKey']">
+            <jaxb:class implClass="com.bpmnengine.model.CorrelationKey"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tCorrelationProperty']">
+            <jaxb:class implClass="com.bpmnengine.model.CorrelationProperty"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tProcess']">
+            <jaxb:class implClass="com.bpmnengine.model.Process"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tFlowElement']">
+            <jaxb:class implClass="com.bpmnengine.model.FlowElement"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tProcess']//xs:element[@ref='flowElement']">
+            <!--<jaxb:property >-->
+                <!--<jaxb:baseType name="com.bpmnengine.model.BFlowElement" />-->
+            <!--</jaxb:property>-->
+            <!--<jaxb:class ref="com.bpmnengine.model.BFlowElement"/>-->
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tSequenceFlow']">
+            <jaxb:class implClass="com.bpmnengine.model.SequenceFlow"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tExclusiveGateway']">
+            <jaxb:class implClass="com.bpmnengine.model.ExclusiveGateway"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tParallelGateway']">
+            <jaxb:class implClass="com.bpmnengine.model.ParallelGateway"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tPotentialOwner']">
+            <jaxb:class implClass="com.bpmnengine.model.PotentialOwner"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tIntermediateThrowEvent']">
+            <jaxb:class implClass="com.bpmnengine.model.IntermediateThrowEvent"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tThrowEvent']">
+            <jaxb:class implClass="com.bpmnengine.model.ThrowEvent"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tSubProcess']">
+            <jaxb:class implClass="com.bpmnengine.model.SubProcess"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tCorrelationPropertyRetrievalExpression']//xs:element[@name='messagePath']">
+            <jaxb:class ref="com.bpmnengine.model.FormalExpression"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='tSequenceFlow']//xs:element[@name='conditionExpression']">
+            <jaxb:class ref="com.bpmnengine.model.FormalExpression"/>
+        </jaxb:bindings>
+
+        <!-- specify bindings in the scope of the element 'listB' within -->
+        <!-- the the complex type A -->
+        <!--<jaxb:bindings node="//xs:complexType[@name='A']//xs:element[@name='listB']">-->
+            <!-- the element should reference the BWrapper cLass -->
+            <!--<jaxb:class ref="com.foobar.BWrapper"/>-->
+        <!--</jaxb:bindings>-->
+    </jaxb:bindings>
+</jaxb:bindings>

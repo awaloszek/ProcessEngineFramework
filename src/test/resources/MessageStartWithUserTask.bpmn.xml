@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn"
+                   xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+
+    <bpmn2:collaboration id="Collaboration_19znd74">
+        <bpmn2:participant id="ProcessEngine" name="Process Engine" processRef="MessageStartEventScript"/>
+        <bpmn2:correlationKey id="MessageCorrelationKey">
+            <bpmn2:correlationPropertyRef>MessageCorrelationProperty</bpmn2:correlationPropertyRef>
+        </bpmn2:correlationKey>
+    </bpmn2:collaboration>
+
+    <bpmn2:correlationProperty id="MessageCorrelationProperty">
+        <bpmn2:correlationPropertyRetrievalExpression messageRef="MessageId">
+            <bpmn2:messagePath language="application/javascript">getKey()</bpmn2:messagePath>
+        </bpmn2:correlationPropertyRetrievalExpression>
+    </bpmn2:correlationProperty>
+
+    <bpmn2:process id="MessageStartEventScript" isExecutable="true">
+        <bpmn2:dataObjectReference id="Item" name="Item" dataObjectRef="ItemDataObject"/>
+        <bpmn2:dataObject id="ItemDataObject" itemSubjectRef="MessageItem"/>
+
+        <bpmn2:startEvent id="StartEventWithMessageDefinition" name="Incoming Message">
+            <bpmn2:outgoing>SequenceFlowToUserTask</bpmn2:outgoing>
+            <bpmn2:dataOutput id="MessageItemDataOutput" itemSubjectRef="MessageItem"/>
+            <bpmn2:dataOutputAssociation id="DataOutputAssociation_0n2sf2q">
+                <bpmn2:sourceRef>MessageItemDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>Item</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:messageEventDefinition messageRef="MessageId"/>
+        </bpmn2:startEvent>
+
+        <bpmn2:sequenceFlow id="SequenceFlowToUserTask" sourceRef="StartEventWithMessageDefinition" targetRef="UserTask"/>
+        <bpmn2:sequenceFlow id="SequenceFlowToEnd" sourceRef="UserTask" targetRef="EndEvent"/>
+
+        <bpmn2:userTask id="UserTask" name="A User Interaction">
+            <bpmn2:incoming>SequenceFlowToUserTask</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlowToEnd</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="UserTaskMessageItemDataInput" itemSubjectRef="MessageItem"/>
+                <bpmn2:dataOutput id="UserTaskMessageItemDataOutput" itemSubjectRef="MessageItem"/>
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>UserTaskMessageItemDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>UserTaskMessageItemDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>ItemDataObject</bpmn2:sourceRef>
+                <bpmn2:targetRef>UserTaskMessageItemDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>UserTaskMessageItemDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>ItemDataObject</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceRef>user</bpmn2:resourceRef>
+                <bpmn2:resourceParameterBinding parameterRef="name">
+                    <bpmn2:formalExpression language="application/javascript">
+                        <![CDATA[getDataInput("UserTaskMessageItemDataInput").getUser()]]></bpmn2:formalExpression>
+                </bpmn2:resourceParameterBinding>
+                <bpmn2:resourceParameterBinding parameterRef="group">
+                    <bpmn2:formalExpression language="application/javascript">
+                        <![CDATA[getDataInput("UserTaskMessageItemDataInput").getGroup()]]></bpmn2:formalExpression>
+                </bpmn2:resourceParameterBinding>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:endEvent id="EndEvent">
+            <bpmn2:incoming>SequenceFlowToEnd</bpmn2:incoming>
+        </bpmn2:endEvent>
+
+    </bpmn2:process>
+
+    <bpmn2:message id="MessageId" name="Message_2uumnt8" itemRef="MessageItem"/>
+    <bpmn2:itemDefinition id="MessageItem" structureRef="MessageItem"/>
+
+    <bpmn2:resource id="user" name="User">
+        <bpmn2:resourceParameter id="name" name="Name" isRequired="true"/>
+        <bpmn2:resourceParameter id="group" name="Group" isRequired="false"/>
+    </bpmn2:resource>
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_19znd74">
+            <bpmndi:BPMNShape id="Participant_1sdyzmh_di" bpmnElement="ProcessEngine">
+                <dc:Bounds x="268" y="139" width="465" height="254"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_06bbarq_di" bpmnElement="SequenceFlowToUserTask">
+                <di:waypoint xsi:type="dc:Point" x="363" y="256"/>
+                <di:waypoint xsi:type="dc:Point" x="444" y="256"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="404" y="241" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="StartEvent_0il48tb_di" bpmnElement="StartEventWithMessageDefinition">
+                <dc:Bounds x="327" y="238" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="321" y="274" width="48" height="25"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="DataObjectReference_003tb5j_di" bpmnElement="MessageItem">
+                <dc:Bounds x="386.641627543036" y="164.07589984350548" width="36" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="394" y="214.07589984350548" width="22" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="DataOutputAssociation_0n2sf2q_di" bpmnElement="DataOutputAssociation_0n2sf2q">
+                <di:waypoint xsi:type="dc:Point" x="357" y="245"/>
+                <di:waypoint xsi:type="dc:Point" x="387" y="211"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="UserTask_13njalv_di" bpmnElement="UserTask">
+                <dc:Bounds x="444" y="216" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="EndEvent_0nj0ux1_di" bpmnElement="EndEvent">
+                <dc:Bounds x="643" y="238" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="661" y="274" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_1pctjsq_di" bpmnElement="SequenceFlowToEnd">
+                <di:waypoint xsi:type="dc:Point" x="544" y="256"/>
+                <di:waypoint xsi:type="dc:Point" x="643" y="256"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="594" y="241" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

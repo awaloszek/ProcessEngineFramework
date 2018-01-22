@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+            xmlns:bpmne="http://bpmnengine.com/schema/1.0"
+            targetNamespace="http://bpmnengine.com/schema/1.0"
+            version="1.0" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://www.omg.org/spec/BPMN/20100524/MODEL" schemaLocation="BPMN20.xsd" />
+
+    <xsd:element name="guard" type="bpmn:tFormalExpression" />
+
+    <xsd:element name="trigger" type="bpmne:tTrigger" />
+    <xsd:complexType name="tTrigger">
+        <xsd:sequence>
+            <xsd:element name="userEvent" type="bpmne:tUserEvent" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="actionEvent" type="bpmne:tUserEvent" substitutionGroup="bpmn:flowElement"/>
+    <xsd:complexType name="tUserEvent">
+        <xsd:complexContent>
+            <xsd:extension base="bpmn:tCatchEvent">
+                <xsd:sequence>
+                    <xsd:element name="action" type="bpmn:tFormalExpression" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+</xsd:schema>

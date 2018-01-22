@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings version="2.1"
+               xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <jaxb:bindings schemaLocation="../resources/xsd/BPMN20.xsd" node="/xs:schema">
+
+        <jaxb:bindings node="//xs:complexType[@name='tDefinitions']">
+            <inheritance:extends>com.bpmnengine.model.Definitions</inheritance:extends>
+        </jaxb:bindings>
+
+
+
+        <!-- specify bindings in the scope of the element 'listB' within -->
+        <!-- the the complex type A -->
+        <!--<jaxb:bindings node="//xs:complexType[@name='A']//xs:element[@name='listB']">-->
+        <!-- the element should reference the BWrapper cLass -->
+        <!--<jaxb:class ref="com.foobar.BWrapper"/>-->
+        <!--</jaxb:bindings>-->
+    </jaxb:bindings>
+</jaxb:bindings>

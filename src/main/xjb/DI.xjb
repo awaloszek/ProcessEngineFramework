@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings version="2.0"
+               xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <jaxb:bindings schemaLocation="../resources/xsd/DI.xsd" node="/xs:schema">
+
+        <jaxb:schemaBindings>
+            <jaxb:package name="com.bpmnengine.gen.omg.spec.dd.di"/>
+        </jaxb:schemaBindings>
+
+    </jaxb:bindings>
+</jaxb:bindings>

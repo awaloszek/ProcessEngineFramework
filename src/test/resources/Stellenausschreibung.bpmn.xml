@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler"
+                   exporterVersion="1.8.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+
+    <bpmn2:collaboration id="Collaboration_09qbpyi">
+        <bpmn2:participant id="ProcessEngine" name="Process Engine" processRef="Stellenausschreibung"/>
+    </bpmn2:collaboration>
+
+    <bpmn2:process id="Stellenausschreibung" isExecutable="true">
+
+        <bpmn2:ioSpecification>
+            <bpmn2:dataInput id="ProcessDataInput"/>
+            <bpmn2:dataOutput id="ProcessDataOutput" />
+            <bpmn2:inputSet>
+                <bpmn2:dataInputRefs>ProcessDataInput</bpmn2:dataInputRefs>
+            </bpmn2:inputSet>
+            <bpmn2:outputSet>
+                <bpmn2:dataOutputRefs>ProcessDataOutput</bpmn2:dataOutputRefs>
+            </bpmn2:outputSet>
+        </bpmn2:ioSpecification>
+
+        <bpmn2:laneSet>
+            <bpmn2:lane id="Lane_1q5ck1l" name="Automatisch">
+                <bpmn2:flowNodeRef>EndEvent</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>AusschreibungDurchfuehren</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>ErfolgsmeldungSenden</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>StartEvent</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>StellenbeschreibungAnlegen</bpmn2:flowNodeRef>
+            </bpmn2:lane>
+            <bpmn2:lane id="Lane_00m3mil" name="SB Personal">
+                <bpmn2:flowNodeRef>StelleBeschreiben</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>StellenbeschreibungKorrigieren</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>AusschreibungAnstossen</bpmn2:flowNodeRef>
+            </bpmn2:lane>
+            <bpmn2:lane id="Lane_0gpvf6w" name="Führungskraft">
+                <bpmn2:flowNodeRef>ExclusiveGateway</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>StellenbeschreibungPruefen</bpmn2:flowNodeRef>
+            </bpmn2:lane>
+        </bpmn2:laneSet>
+
+        <bpmn2:sequenceFlow id="SequenceFlow_0" sourceRef="StartEvent" targetRef="StellenbeschreibungAnlegen"/>
+
+        <bpmn2:userTask id="StelleBeschreiben" name="Stelle beschreiben">
+            <bpmn2:incoming>SequenceFlow_02ltgny</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="StelleBeschreibenDataInput" />
+                <bpmn2:dataOutput id="StelleBeschreibenDataOutput" />
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>StelleBeschreibenDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>StelleBeschreibenDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>StellenausschreibungDataObjectReference</bpmn2:sourceRef>
+                <bpmn2:targetRef>StelleBeschreibenDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>StelleBeschreibenDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenausschreibungDataObjectReference</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceRef>SBPersonal</bpmn2:resourceRef>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="StelleBeschreiben" targetRef="StellenbeschreibungPruefen"/>
+
+        <bpmn2:exclusiveGateway id="ExclusiveGateway" name="Ok?">
+            <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+            <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+        </bpmn2:exclusiveGateway>
+
+        <bpmn2:sequenceFlow id="SequenceFlow_3" sourceRef="StellenbeschreibungPruefen" targetRef="ExclusiveGateway"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_4" name="Nein" sourceRef="ExclusiveGateway" targetRef="StellenbeschreibungKorrigieren">
+            <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" language="application/javascript">
+                importClass(com.bpmnengine.util.State);
+                !getDataObject('StellenausschreibungDataObject').getState().equals(State.APPROVED);
+            </bpmn2:conditionExpression>
+        </bpmn2:sequenceFlow>
+        <bpmn2:sequenceFlow id="SequenceFlow_6" name="Ja" sourceRef="ExclusiveGateway" targetRef="AusschreibungAnstossen">
+            <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" language="application/javascript">
+                importClass(com.bpmnengine.util.State);
+                getDataObject('StellenausschreibungDataObject').getState().equals(State.APPROVED);
+            </bpmn2:conditionExpression>
+        </bpmn2:sequenceFlow>
+        <bpmn2:sequenceFlow id="SequenceFlow_5" sourceRef="StellenbeschreibungKorrigieren" targetRef="StellenbeschreibungPruefen"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_7" sourceRef="AusschreibungAnstossen" targetRef="AusschreibungDurchfuehren"/>
+
+        <bpmn2:userTask id="StellenbeschreibungKorrigieren" name="Stellenbeschreibung korrigieren">
+            <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="StellenbeschreibungKorrigierenDataInput" />
+                <bpmn2:dataOutput id="StellenbeschreibungKorrigierenDataOutput" />
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>StellenbeschreibungKorrigierenDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>StellenbeschreibungKorrigierenDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>StellenausschreibungDataObject</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenbeschreibungKorrigierenDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>StellenbeschreibungKorrigierenDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenausschreibungDataObject</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceRef>SBPersonal</bpmn2:resourceRef>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:userTask id="AusschreibungAnstossen" name="Ausschreibung anstoßen">
+            <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="AusschreibungAnstossenDataInput" />
+                <bpmn2:dataOutput id="AusschreibungAnstossenDataOutput" />
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>AusschreibungAnstossenDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>AusschreibungAnstossenDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>StellenausschreibungDataObject</bpmn2:sourceRef>
+                <bpmn2:targetRef>AusschreibungAnstossenDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>AusschreibungAnstossenDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenausschreibungDataObject</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceRef>SBPersonal</bpmn2:resourceRef>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="AusschreibungDurchfuehren" targetRef="ErfolgsmeldungSenden"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_9" sourceRef="ErfolgsmeldungSenden" targetRef="EndEvent"/>
+
+        <bpmn2:endEvent id="EndEvent" name="Stelle Ausgeschrieben">
+            <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+        </bpmn2:endEvent>
+
+        <bpmn2:userTask id="StellenbeschreibungPruefen" name="Stellenbeschreibung prüfen">
+            <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+            <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="StellenbeschreibungPruefenDataInput" />
+                <bpmn2:dataOutput id="StellenbeschreibungPruefenDataOutput" />
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>StellenbeschreibungPruefenDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>StellenbeschreibungPruefenDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>StellenausschreibungDataObject</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenbeschreibungPruefenDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>StellenbeschreibungPruefenDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenausschreibungDataObject</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceRef>Fuehrungskraft</bpmn2:resourceRef>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:scriptTask id="AusschreibungDurchfuehren" name="Ausschreibung durchführen" scriptFormat="application/javascript">
+            <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="AusschreibungDurchfuehrenDataInput" />
+                <bpmn2:dataOutput id="AusschreibungDurchfuehrenDataOutput" />
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>AusschreibungDurchfuehrenDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>AusschreibungDurchfuehrenDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>StellenausschreibungDataObject</bpmn2:sourceRef>
+                <bpmn2:targetRef>AusschreibungDurchfuehrenDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>AusschreibungDurchfuehrenDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenausschreibungDataObject</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:script><![CDATA[
+                importClass(com.bpmnengine.util.State);
+                println("Stellenausschreibung durchfuehren");
+                var stellenausschreibung = getDataInput('AusschreibungDurchfuehrenDataInput');
+                stellenausschreibung.setState(State.DONE);
+                setDataOutput('AusschreibungDurchfuehrenDataOutput', stellenausschreibung);
+            ]]></bpmn2:script>
+        </bpmn2:scriptTask>
+
+        <bpmn2:scriptTask id="ErfolgsmeldungSenden" name="Erfolgsmeldung senden" scriptFormat="application/javascript">
+            <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="ErfolgsmeldungSendenDataInput" />
+                <bpmn2:dataOutput id="ErfolgsmeldungSendenDataOutput" />
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>ErfolgsmeldungSendenDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>ErfolgsmeldungSendenDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>StellenausschreibungDataObject</bpmn2:sourceRef>
+                <bpmn2:targetRef>ErfolgsmeldungSendenDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>ErfolgsmeldungSendenDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>ProcessDataOutput</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:script><![CDATA[
+                importClass(com.bpmnengine.util.State);
+                var stellenausschreibung = getDataInput('ErfolgsmeldungSendenDataInput');
+                if (stellenausschreibung.getState().equals(State.DONE))
+                    println("Erfolgsmeldung wird gesendet");
+                else
+                    println("Irgendetwas ist schief gelaufen");
+
+                setDataOutput('ErfolgsmeldungSendenDataOutput', stellenausschreibung);
+            ]]></bpmn2:script>
+        </bpmn2:scriptTask>
+
+        <bpmn2:startEvent id="StartEvent">
+            <bpmn2:outgoing>SequenceFlow_0</bpmn2:outgoing>
+            <bpmn2:dataOutput id="StartEventDataOutput" />
+            <bpmn2:dataOutputAssociation>
+                <bpmn2:sourceRef>StartEventDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>ProcessDataInput</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:messageEventDefinition messageRef="RequestMessage"/>
+        </bpmn2:startEvent>
+
+        <bpmn2:sequenceFlow id="SequenceFlow_02ltgny" sourceRef="StellenbeschreibungAnlegen" targetRef="StelleBeschreiben"/>
+
+        <bpmn2:scriptTask id="StellenbeschreibungAnlegen" name="Stellenbeschreibung anlegen" scriptFormat="application/javascript">
+            <bpmn2:incoming>SequenceFlow_0</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_02ltgny</bpmn2:outgoing>
+            <bpmn2:ioSpecification>
+                <bpmn2:dataInput id="StellenbeschreibungAnlegenDataInput" />
+                <bpmn2:dataOutput id="StellenbeschreibungAnlegenDataOutput" />
+                <bpmn2:inputSet>
+                    <bpmn2:dataInputRefs>StellenbeschreibungAnlegenDataInput</bpmn2:dataInputRefs>
+                </bpmn2:inputSet>
+                <bpmn2:outputSet>
+                    <bpmn2:dataOutputRefs>StellenbeschreibungAnlegenDataOutput</bpmn2:dataOutputRefs>
+                </bpmn2:outputSet>
+            </bpmn2:ioSpecification>
+            <bpmn2:dataInputAssociation>
+                <bpmn2:sourceRef>ProcessDataInput</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenbeschreibungAnlegenDataInput</bpmn2:targetRef>
+            </bpmn2:dataInputAssociation>
+            <bpmn2:dataOutputAssociation id="DataOutputAssociation_0i7or0l">
+                <bpmn2:sourceRef>StellenbeschreibungAnlegenDataOutput</bpmn2:sourceRef>
+                <bpmn2:targetRef>StellenausschreibungDataObjectReference</bpmn2:targetRef>
+            </bpmn2:dataOutputAssociation>
+            <bpmn2:script><![CDATA[
+                importClass(com.bpmnengine.util.Stellenausschreibung);
+                var value = new Stellenausschreibung(123);
+                setDataOutput('StellenbeschreibungAnlegenDataOutput', value)
+            ]]>
+            </bpmn2:script>
+        </bpmn2:scriptTask>
+
+        <bpmn2:dataObjectReference id="StellenausschreibungDataObjectReference" name="Stellenbeschreibung" dataObjectRef="StellenausschreibungDataObject"/>
+        <bpmn2:dataObject id="StellenausschreibungDataObject" itemSubjectRef="StellenausschreibungItemDefinition" />
+    </bpmn2:process>
+
+    <bpmn2:message id="RequestMessage" itemRef="RequestItemDefinition"/>
+
+    <bpmn2:itemDefinition id="RequestItemDefinition" />
+    <bpmn2:itemDefinition id="StellenausschreibungItemDefinition"/>
+
+    <bpmn2:resource id="Fuehrungskraft" name="Fuehrungskraft" />
+    <bpmn2:resource id="SBPersonal" name="SB Personal" />
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_09qbpyi">
+            <bpmndi:BPMNShape id="Participant_085qeia_di" bpmnElement="ProcessEngine">
+                <dc:Bounds x="89" y="365" width="1325" height="370"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Lane_1q5ck1l_di" bpmnElement="Lane_1q5ck1l">
+                <dc:Bounds x="119" y="365" width="1295" height="124"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Lane_00m3mil_di" bpmnElement="Lane_00m3mil">
+                <dc:Bounds x="119" y="489" width="1295" height="123"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Lane_0gpvf6w_di" bpmnElement="Lane_0gpvf6w">
+                <dc:Bounds x="119" y="612" width="1295" height="123"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="StartEvent_0oyxy1q_di" bpmnElement="StartEvent">
+                <dc:Bounds x="167" y="411" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="185" y="446" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_1uhe2yn_di" bpmnElement="SequenceFlow_0">
+                <di:waypoint xsi:type="dc:Point" x="203" y="429"/>
+                <di:waypoint xsi:type="dc:Point" x="290" y="429"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="247" y="414" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="UserTask_13wfv5l_di" bpmnElement="StelleBeschreiben">
+                <dc:Bounds x="290" y="513" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_0hl5ygl_di" bpmnElement="SequenceFlow_2">
+                <di:waypoint xsi:type="dc:Point" x="390" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="419" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="419" y="676"/>
+                <di:waypoint xsi:type="dc:Point" x="447" y="676"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="434" y="614.5" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="ExclusiveGateway_014q5m6_di" bpmnElement="ExclusiveGateway" isMarkerVisible="true">
+                <dc:Bounds x="592.2602193419741" y="651" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="592" y="703" width="21" height="12"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_1cbaqvi_di" bpmnElement="SequenceFlow_3">
+                <di:waypoint xsi:type="dc:Point" x="547" y="676"/>
+                <di:waypoint xsi:type="dc:Point" x="592" y="676"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="570" y="661" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_1kwpxn1_di" bpmnElement="SequenceFlow_4">
+                <di:waypoint xsi:type="dc:Point" x="617" y="651"/>
+                <di:waypoint xsi:type="dc:Point" x="617" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="655" y="553"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="620" y="621" width="23" height="12"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_1751tg6_di" bpmnElement="SequenceFlow_6">
+                <di:waypoint xsi:type="dc:Point" x="642" y="676"/>
+                <di:waypoint xsi:type="dc:Point" x="814" y="676"/>
+                <di:waypoint xsi:type="dc:Point" x="814" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="837" y="553"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="651" y="654.5" width="12" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_1x5wcb9_di" bpmnElement="SequenceFlow_5">
+                <di:waypoint xsi:type="dc:Point" x="755" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="779" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="779" y="500"/>
+                <di:waypoint xsi:type="dc:Point" x="531" y="500"/>
+                <di:waypoint xsi:type="dc:Point" x="531" y="636"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="794" y="526.5" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_0dqbujj_di" bpmnElement="SequenceFlow_7">
+                <di:waypoint xsi:type="dc:Point" x="937" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="961" y="553"/>
+                <di:waypoint xsi:type="dc:Point" x="961" y="429"/>
+                <di:waypoint xsi:type="dc:Point" x="987" y="429"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="931" y="491" width="90" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="UserTask_1b4dbte_di" bpmnElement="StellenbeschreibungKorrigieren">
+                <dc:Bounds x="655" y="513" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="UserTask_1wzp5jm_di" bpmnElement="AusschreibungAnstossen">
+                <dc:Bounds x="837" y="513" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_0x4am07_di" bpmnElement="SequenceFlow_8">
+                <di:waypoint xsi:type="dc:Point" x="1087" y="429"/>
+                <di:waypoint xsi:type="dc:Point" x="1153" y="429"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="1075" y="414" width="90" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="EndEvent_0h3n5e1_di" bpmnElement="EndEvent">
+                <dc:Bounds x="1328.261216350947" y="411" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="1307" y="447" width="79" height="25"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_1w7kbwh_di" bpmnElement="SequenceFlow_9">
+                <di:waypoint xsi:type="dc:Point" x="1253" y="429"/>
+                <di:waypoint xsi:type="dc:Point" x="1328" y="429"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="1245.5" y="414" width="90" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="UserTask_0oh7i5y_di" bpmnElement="StellenbeschreibungPruefen">
+                <dc:Bounds x="447" y="636" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="ScriptTask_0znowof_di" bpmnElement="AusschreibungDurchfuehren">
+                <dc:Bounds x="987" y="389" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="ScriptTask_07y2r50_di" bpmnElement="ErfolgsmeldungSenden">
+                <dc:Bounds x="1153" y="389" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_02ltgny_di" bpmnElement="SequenceFlow_02ltgny">
+                <di:waypoint xsi:type="dc:Point" x="340" y="469"/>
+                <di:waypoint xsi:type="dc:Point" x="340" y="513"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="355" y="491" width="0" height="0"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="ScriptTask_1kyd152_di" bpmnElement="StellenbeschreibungAnlegen">
+                <dc:Bounds x="290" y="389" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="StellenausschreibungDataObjectReference_di" bpmnElement="StellenausschreibungDataObjectReference">
+                <dc:Bounds x="479" y="404" width="36" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="456" y="454" width="82" height="25"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="DataOutputAssociation_0i7or0l_di" bpmnElement="DataOutputAssociation_0i7or0l">
+                <di:waypoint xsi:type="dc:Point" x="390" y="429"/>
+                <di:waypoint xsi:type="dc:Point" x="479" y="429"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
